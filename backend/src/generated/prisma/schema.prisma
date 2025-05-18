@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Empresa {
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  filiais  Filial[]
+  Cliente  Cliente[]
+  usuarios Usuarios[]
+}
+
+model Filial {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  razaoSocial  String
+  nomeFantasia String
+  cnpj         String   @unique
+  telefone     String?
+  email        String?
+  endereco     Endereco
+
+  empresaId String  @db.ObjectId
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+
+  clientes Cliente[]
+  produtos Produto[]
+  estoque  Estoque[]
+}
+
+model Cliente {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome     String
+  email    String   @unique
+  telefone String?
+  endereco Endereco
+
+  empresaId String?  @db.ObjectId
+  empresa   Empresa? @relation(fields: [empresaId], references: [id])
+
+  filialId String? @db.ObjectId
+  filial   Filial? @relation(fields: [filialId], references: [id])
+}
+
+model Produto {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  nome        String
+  descricao   String
+  precoVenda  Float
+  precoCompra Float
+  undVenda    Unidade @relation("UnidadeVenda", fields: [undVendaId], references: [id])
+  undVendaId  String  @db.ObjectId
+
+  undCompra   Unidade @relation("UnidadeCompra", fields: [undCompraId], references: [id])
+  undCompraId String  @db.ObjectId
+
+  filialId String @db.ObjectId
+  filial   Filial @relation(fields: [filialId], references: [id])
+
+  estoque Estoque[]
+}
+
+model Estoque {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  quantidade Float
+
+  filialId  String @db.ObjectId
+  produtoId String @db.ObjectId
+
+  filial  Filial  @relation(fields: [filialId], references: [id])
+  produto Produto @relation(fields: [produtoId], references: [id])
+
+  @@unique([filialId, produtoId])
+}
+
+model Usuarios {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  nome      String?
+  email     String?   @unique
+  senha     String?
+  permissao Permissao
+
+  empresaId String  @db.ObjectId
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+}
+
+model Unidade {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  nome  String
+  sigla String
+
+  produtosVenda  Produto[] @relation("UnidadeVenda")
+  produtosCompra Produto[] @relation("UnidadeCompra")
+}
+
+enum Permissao {
+  ADMIN
+  FUNCIONARIO
+  FINACEIRO
+  GERENTE
+}
+
+type Endereco {
+  inscEstadual String
+  rua          String
+  numero       Int
+  bairro       String
+  cidade       String
+  estado       String
+  uf           String
+  cep          String
+}
