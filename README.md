@@ -19,3 +19,6 @@ Este projeto define o schema de um sistema de gestão empresarial utilizando **P
 # Instalação
 - No cmd entre na pasta BACKEND
 - Execute npm install
+- npm run dev
+
+OBS: Necessario configurar o .env para determinar a database url
