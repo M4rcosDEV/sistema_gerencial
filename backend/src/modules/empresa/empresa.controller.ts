@@ -5,9 +5,9 @@ const empresaService = new EmpresaService();
 
 export class EmpresaController {
     async criarEmpresa(request: Request, response: Response) {
+        const data = request.body;
+        
         try {
-            
-            const data = request.body;
             const novaEmpresa = await empresaService.criarEmpresa(data);
             response.status(201).json(novaEmpresa);
         } catch (error) {
