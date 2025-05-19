@@ -5,6 +5,7 @@ const usuarioService = new UsuariosService();
 
 export class UsuariosController {
     async criarUsuario(request: Request, response: Response){
+          
         const data = request.body;
         try {
             const usuario = await usuarioService.criarUsuario(data);

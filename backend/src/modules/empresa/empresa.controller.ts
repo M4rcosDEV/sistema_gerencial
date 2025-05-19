@@ -6,6 +6,7 @@ const empresaService = new EmpresaService();
 export class EmpresaController {
     async criarEmpresa(request: Request, response: Response) {
         try {
+            
             const data = request.body;
             const novaEmpresa = await empresaService.criarEmpresa(data);
             response.status(201).json(novaEmpresa);

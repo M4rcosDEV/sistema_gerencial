@@ -4,107 +4,36 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Empresa {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  filiais  Filial[]
-  Cliente  Cliente[]
-  usuarios Usuarios[]
+  id          String    @id @default(uuid())
+  razaoSocial String
+  filiais     Filial[]
+  usuarios    Usuario[]
 }
 
 model Filial {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  razaoSocial  String
+  id           String    @id @default(uuid())
+  razaoSocial  String?
   nomeFantasia String
-  cnpj         String   @unique
+  cnpj         String    @unique
   telefone     String?
   email        String?
-  endereco     Endereco
+  endereco     Endereco?
 
-  empresaId String  @db.ObjectId
+  empresaId String
   empresa   Empresa @relation(fields: [empresaId], references: [id])
 
   clientes Cliente[]
-  produtos Produto[]
-  estoque  Estoque[]
+
+  usuariosPermitidos Usuario[] @relation("UsuarioFiliaisPermitidas")
 }
 
-model Cliente {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  nome     String
-  email    String   @unique
-  telefone String?
-  endereco Endereco
-
-  empresaId String?  @db.ObjectId
-  empresa   Empresa? @relation(fields: [empresaId], references: [id])
-
-  filialId String? @db.ObjectId
-  filial   Filial? @relation(fields: [filialId], references: [id])
-}
-
-model Produto {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  nome        String
-  descricao   String
-  precoVenda  Float
-  precoCompra Float
-  undVenda    Unidade @relation("UnidadeVenda", fields: [undVendaId], references: [id])
-  undVendaId  String  @db.ObjectId
-
-  undCompra   Unidade @relation("UnidadeCompra", fields: [undCompraId], references: [id])
-  undCompraId String  @db.ObjectId
-
-  filialId String @db.ObjectId
-  filial   Filial @relation(fields: [filialId], references: [id])
-
-  estoque Estoque[]
-}
-
-model Estoque {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  quantidade Float
-
-  filialId  String @db.ObjectId
-  produtoId String @db.ObjectId
-
-  filial  Filial  @relation(fields: [filialId], references: [id])
-  produto Produto @relation(fields: [produtoId], references: [id])
-
-  @@unique([filialId, produtoId])
-}
-
-model Usuarios {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  nome      String?
-  email     String?   @unique
-  senha     String?
-  permissao Permissao
-
-  empresaId String  @db.ObjectId
-  empresa   Empresa @relation(fields: [empresaId], references: [id])
-}
-
-model Unidade {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  nome  String
-  sigla String
-
-  produtosVenda  Produto[] @relation("UnidadeVenda")
-  produtosCompra Produto[] @relation("UnidadeCompra")
-}
-
-enum Permissao {
-  ADMIN
-  FUNCIONARIO
-  FINACEIRO
-  GERENTE
-}
-
-type Endereco {
+model Endereco {
+  id           String @id @default(uuid())
   inscEstadual String
   rua          String
   numero       Int
@@ -113,4 +42,33 @@ type Endereco {
   estado       String
   uf           String
   cep          String
+
+  filial   Filial    @relation(fields: [filialId], references: [id])
+  filialId String    @unique
+  Cliente  Cliente[]
+}
+
+model Usuario {
+  id    String @id @default(uuid())
+  nome  String
+  email String @unique
+  senha String
+
+  empresaId String
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+
+  filiaisPermitidas Filial[] @relation("UsuarioFiliaisPermitidas")
+}
+
+model Cliente {
+  id       String  @id @default(uuid())
+  nome     String
+  email    String  @unique
+  telefone String?
+
+  endereco   Endereco? @relation(fields: [enderecoId], references: [id])
+  enderecoId String?
+
+  filialId String
+  filial   Filial @relation(fields: [filialId], references: [id])
 }

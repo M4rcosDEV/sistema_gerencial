@@ -14,7 +14,7 @@ export class UsuariosService {
         return usuarioRepository.findByEmail(email);
     }
 
-    async criarUsuario(data: PrismaTypes.UsuariosCreateInput) {
+    async criarUsuario(data: PrismaTypes.UsuarioCreateInput) {
         if (!data.nome || !data.email || !data.senha) {
             throw new Error("nome, email e senha é obrigatório.");
         }
@@ -27,12 +27,8 @@ export class UsuariosService {
 
         const senhaHash = bcrypt.hashSync(data.senha, 5);
 
-        return usuarioRepository.create({
-            nome: data.nome,
-            email: data.email,
-            senha: senhaHash,
-            permissao: data.permissao ?? "FUNCIONARIO",
-            empresa: data.empresa!,
-        });
+        data.senha = senhaHash;
+        
+        return usuarioRepository.create(data);
     }
 }

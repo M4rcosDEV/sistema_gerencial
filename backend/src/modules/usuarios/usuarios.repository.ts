@@ -4,15 +4,15 @@ import { Prisma } from "../../generated/prisma";
 export class UsuariosRepository {
 
     async findAll(){
-        return prisma.usuarios.findMany();
+        return prisma.usuario.findMany();
     }
 
-    async create(data: PrismaTypes.UsuariosCreateInput) {
-        return prisma.usuarios.create({data});
+    async create(data: PrismaTypes.UsuarioCreateInput) {
+        return prisma.usuario.create({data});
     }
 
     async findByEmail(email: string){
-        return prisma.usuarios.findUnique({
+        return prisma.usuario.findUnique({
             where: {email}
         });
     }

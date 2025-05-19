@@ -113,8 +113,16 @@ Prisma.NullTypes = {
  * Enums
  */
 
+exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
+  Serializable: 'Serializable'
+});
+
 exports.Prisma.EmpresaScalarFieldEnum = {
-  id: 'id'
+  id: 'id',
+  razaoSocial: 'razaoSocial'
 };
 
 exports.Prisma.FilialScalarFieldEnum = {
@@ -127,46 +135,34 @@ exports.Prisma.FilialScalarFieldEnum = {
   empresaId: 'empresaId'
 };
 
+exports.Prisma.EnderecoScalarFieldEnum = {
+  id: 'id',
+  inscEstadual: 'inscEstadual',
+  rua: 'rua',
+  numero: 'numero',
+  bairro: 'bairro',
+  cidade: 'cidade',
+  estado: 'estado',
+  uf: 'uf',
+  cep: 'cep',
+  filialId: 'filialId'
+};
+
+exports.Prisma.UsuarioScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  email: 'email',
+  senha: 'senha',
+  empresaId: 'empresaId'
+};
+
 exports.Prisma.ClienteScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   email: 'email',
   telefone: 'telefone',
-  empresaId: 'empresaId',
+  enderecoId: 'enderecoId',
   filialId: 'filialId'
-};
-
-exports.Prisma.ProdutoScalarFieldEnum = {
-  id: 'id',
-  nome: 'nome',
-  descricao: 'descricao',
-  precoVenda: 'precoVenda',
-  precoCompra: 'precoCompra',
-  undVendaId: 'undVendaId',
-  undCompraId: 'undCompraId',
-  filialId: 'filialId'
-};
-
-exports.Prisma.EstoqueScalarFieldEnum = {
-  id: 'id',
-  quantidade: 'quantidade',
-  filialId: 'filialId',
-  produtoId: 'produtoId'
-};
-
-exports.Prisma.UsuariosScalarFieldEnum = {
-  id: 'id',
-  nome: 'nome',
-  email: 'email',
-  senha: 'senha',
-  permissao: 'permissao',
-  empresaId: 'empresaId'
-};
-
-exports.Prisma.UnidadeScalarFieldEnum = {
-  id: 'id',
-  nome: 'nome',
-  sigla: 'sigla'
 };
 
 exports.Prisma.SortOrder = {
@@ -178,21 +174,19 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
-exports.Permissao = exports.$Enums.Permissao = {
-  ADMIN: 'ADMIN',
-  FUNCIONARIO: 'FUNCIONARIO',
-  FINACEIRO: 'FINACEIRO',
-  GERENTE: 'GERENTE'
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
+
 
 exports.Prisma.ModelName = {
   Empresa: 'Empresa',
   Filial: 'Filial',
-  Cliente: 'Cliente',
-  Produto: 'Produto',
-  Estoque: 'Estoque',
-  Usuarios: 'Usuarios',
-  Unidade: 'Unidade'
+  Endereco: 'Endereco',
+  Usuario: 'Usuario',
+  Cliente: 'Cliente'
 };
 
 /**
